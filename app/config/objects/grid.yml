@@ -1,0 +1,21 @@
+Name: Grid
+Properties:
+  -
+    Name: quadrants
+    Type: Collection
+    Dimensions:
+      -
+        Name: x
+        Type: Integer
+        Constraints:
+          -
+            min: 0
+            max: 2
+      -
+        Name: y
+        Type: Integer
+        Constraints:
+          -
+            min: 0
+            max: 2
+    Items Type: Token

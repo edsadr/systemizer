@@ -1,0 +1,7 @@
+Name: Token
+Properties:
+ -
+  Name: value
+  Type: String
+  Constraints:
+    - regex: "/(x|X|o|O)/"

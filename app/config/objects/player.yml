@@ -1,0 +1,8 @@
+Name: Player
+Properties:
+  -
+    Name: name
+    Type: String
+  -
+    Name: token
+    Type: Token

@@ -1,0 +1,32 @@
+Name: TicTacToe
+Properties:
+ -
+  Name: currentPlayer
+  Type: Player
+  Kind: Internal
+ -
+  Name: x
+  Type: Integer
+  Constraints:
+    - min: 0
+    - max: 2
+ -
+  Name: y
+  Type: Integer
+  Constraints:
+    - min: 0
+    - max: 2
+ -
+  Name: player1
+  Type: Player
+ -
+  Name: player2
+  Type: Player
+ -
+  Name: grid
+  Type: Grid
+Actions:
+  -
+   Name: PlayTurn
+
+
