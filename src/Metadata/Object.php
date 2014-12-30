@@ -1,14 +1,17 @@
 <?php
 namespace Fmizzell\Systemizer\Metadata;
 use Fmizzell\Systemizer\Metadata\Property;
+use Fmizzell\Systemizer\Metadata\Action;
 
 class Object {
     private $name;
     private $properties;
+    private $actions;
 
     public function __construct($name) {
         $this->setName($name);
         $this->properties = array();
+        $this->actions = array();
     }
 
     private function setName($name) {
@@ -25,6 +28,14 @@ class Object {
 
     public function getProperties() {
         return $this->properties;
+    }
+
+    public function addAction(Action $action) {
+        $this->actions[] = $action;
+    }
+
+    public function getActions() {
+        return $this->actions;
     }
 
     /**
@@ -47,7 +58,7 @@ class Object {
             throw new Exception("The array did not contain a the necessary name key for the class.");
         }
 
-        if(array_key_exists('Properties', $array)) {
+        if (!empty($array['Properties'])) {
             foreach ($array['Properties'] as $property) {
                 if(array_key_exists("Name", $property) && strcmp($property["Type"], "Collection") == 0) {
                     $property = Collection::createFromArray($property);
@@ -60,6 +71,13 @@ class Object {
             }
         }
 
+        if (!empty($array['Actions'])) {
+          foreach ($array['Actions'] as $action) {
+              $action = Action::createFromArray($action);
+              $object->addAction($action);
+          }
+        }
+
         return $object;
     }
-} 
+}

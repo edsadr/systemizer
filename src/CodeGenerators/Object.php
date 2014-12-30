@@ -2,6 +2,7 @@
 namespace Fmizzell\Systemizer\CodeGenerators;
 use Wingu\OctopusCore\CodeGenerator\PHP\OOP\ClassGenerator;
 use Wingu\OctopusCore\CodeGenerator\PHP\OOP\MethodGenerator;
+use Wingu\OctopusCore\CodeGenerator\PHP\OOP\UseTraitGenerator;
 
 class Object {
 
@@ -52,6 +53,13 @@ class Object {
                 $this->codeGenerator->addUse($use);
             }
         }
+
+        // Actions namespace.
+        $actions_namespace = "Actions\\";
+        foreach($this->metadata->getActions() as $action) {
+          $utg = new UseTraitGenerator($actions_namespace . $action->getName());
+          $this->codeGenerator->addTraitUse($utg);
+        }
     }
 
     private function setPropertyDeclarations() {
@@ -96,4 +104,4 @@ class Object {
         $this->setUses();
         return $this->codeGenerator->generate();
     }
-} 
+}
