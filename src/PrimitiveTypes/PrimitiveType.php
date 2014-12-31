@@ -26,6 +26,10 @@ class PrimitiveType {
         }
     }
 
+    public function getVariable() {
+      return $this->variable;
+    }
+
     public function setConstraint($constraint) {
         $this->constraints[] = $constraint;
     }
@@ -49,4 +53,4 @@ class PrimitiveType {
         }
         return "";
     }
-} 
+}

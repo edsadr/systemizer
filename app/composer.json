@@ -1,0 +1,15 @@
+{
+    "name": "fmizzell/tictactoe",
+    "require": {
+        "vlucas/valitron": "1.2.2"
+    },
+    "autoload": {
+        "psr-4": {"Fmizzell\\TicTacToe\\": "src/"}
+    },
+    "authors": [
+        {
+            "name": "fmizzell",
+            "email": "fmizzell@1312210.no-reply.drupal.org"
+        }
+    ]
+}

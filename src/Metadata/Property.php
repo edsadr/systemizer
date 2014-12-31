@@ -1,13 +1,13 @@
 <?php
 namespace Fmizzell\Systemizer\Metadata;
-
-
+use \Exception;
 
 class Property {
 
     const REQUIRED = 0;
     const OPTIONAL = 1;
     const INTERNAL = 2;
+    const ACCESSIBLE = 3;
 
     private $name;
     private $type;
@@ -40,11 +40,11 @@ class Property {
     }
 
     public function setKind($kind) {
-       if($kind === Property::REQUIRED || $kind === Property::OPTIONAL || $kind === Property::INTERNAL) {
+       if($kind === Property::REQUIRED || $kind === Property::OPTIONAL || $kind === Property::INTERNAL || $kind === Property::ACCESSIBLE) {
            $this->kind = $kind;
        }
        else {
-           throw new Exception("The kind should be one of the constants: REQUIRED, OPTIONAL, or INTERNAL");
+           throw new Exception("The kind should be one of the constants: REQUIRED, OPTIONAL, ACCESSIBLE or INTERNAL");
        }
     }
 
@@ -93,9 +93,12 @@ class Property {
             else if($kind == "Internal") {
                 $property->setKind(Property::INTERNAL);
             }
+            else if($kind == "Accessible") {
+                $property->setKind(Property::ACCESSIBLE);
+            }
         }
 
 
         return $property;
     }
-} 
+}

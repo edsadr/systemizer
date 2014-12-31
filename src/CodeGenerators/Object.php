@@ -47,6 +47,7 @@ class Object {
 
     private function setUses() {
         $this->codeGenerator->addUse("Valitron\\Validator");
+        $this->codeGenerator->addUse("\\Exception");
         foreach($this->propertyCodeGenerators as $pcg) {
             $uses = $pcg->getUses();
             foreach($uses as $use) {

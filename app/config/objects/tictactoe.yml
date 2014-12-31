@@ -3,7 +3,7 @@ Properties:
  -
   Name: currentPlayer
   Type: Player
-  Kind: Internal
+  Kind: Accessible
  -
   Name: x
   Type: Integer
@@ -31,5 +31,9 @@ Properties:
 Actions:
   -
    Name: PlayATurn
+  -
+   Name: Draw
+  -
+   Name: Winner
 
 

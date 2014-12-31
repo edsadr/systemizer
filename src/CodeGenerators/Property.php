@@ -75,7 +75,7 @@ class Property {
         foreach($this->getConstraintValidationLines() as $line) {
             $method->addBodyLine($line);
         }
-        $method->addBodyLine($this->wrapInValidationCode("\$this->{$name} = \${$name};"));
+        $method->addBodyLine($this->wrapInValidationCode("\$this->{$name} = \${$name};", FALSE, TRUE));
         return $method;
     }
 
@@ -102,7 +102,7 @@ class Property {
         return new CodeLineGenerator("\$this->{$this->getSetterName($propertyName)}(\${$propertyName});");
     }
 
-    protected function wrapInValidationCode($string, $negate = FALSE) {
+    protected function wrapInValidationCode($string, $negate = FALSE, $exception = FALSE) {
         $primitive = $this->isPrimitive();
 
         // If the type is a primitive type, we use the types validation.
@@ -122,6 +122,10 @@ class Property {
 
         if ($primitive) {
             $line .= " }";
+        }
+
+        if($primitive && $exception) {
+          $line .= " else { throw new Exception(\"Invalid value\"); }";
         }
         return new CodeLineGenerator($line);
     }
@@ -167,7 +171,8 @@ class Property {
                 return "public";
             }
             elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
-                $kind === \Fmizzell\Systemizer\Metadata\Property::INTERNAL) {
+                $kind === \Fmizzell\Systemizer\Metadata\Property::INTERNAL ||
+                $kind === \Fmizzell\Systemizer\Metadata\Property::ACCESSIBLE) {
                 return "protected";
             }
         }
@@ -176,10 +181,11 @@ class Property {
                 return "protected";
             }
             elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
-                $kind === \Fmizzell\Systemizer\Metadata\Property::OPTIONAL) {
+                $kind === \Fmizzell\Systemizer\Metadata\Property::OPTIONAL ||
+                $kind === \Fmizzell\Systemizer\Metadata\Property::ACCESSIBLE) {
                 return "public";
             }
         }
         throw new \Exception("Incorrect accessor type or property kind");
     }
-} 
+}

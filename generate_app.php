@@ -7,7 +7,6 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 error_reporting(E_ERROR);
 
-
 $yaml = new Parser();
 $appConfig = $yaml->parse(file_get_contents('app/config/app.yml'));
 $namespace = "{$appConfig['Creator']}\\{$appConfig['Name']}";

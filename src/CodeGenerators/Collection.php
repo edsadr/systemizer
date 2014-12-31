@@ -56,7 +56,9 @@ class Collection extends Property {
             $keys .= "[\${$d->getName()}]";
         }
 
-        $method->addBodyLine(new CodeLineGenerator("if (\$is_valid) { \$this->{$this->metadata->getName()}{$keys} = \$value; }"));
+        $line = "if (\$is_valid) { \$this->{$this->metadata->getName()}{$keys} = \$value; } else { throw new Exception(\"Invalid value\"); }";
+
+        $method->addBodyLine(new CodeLineGenerator($line));
 
         return $method;
     }
@@ -86,9 +88,10 @@ class Collection extends Property {
             $keys .= "[\${$param->getName()}]";
         }
 
-        $method->addBodyLine(new CodeLineGenerator("if (\$is_valid) { return \$this->{$this->metadata->getName()}{$keys}; }"));
+        $var = "\$this->{$this->metadata->getName()}{$keys}";
+        $method->addBodyLine(new CodeLineGenerator("if (\$is_valid && !empty({$var})) { return $var; }"));
         $method->addBodyLine(new CodeLineGenerator("else { return NULL; }"));
 
         return $method;
     }
-} 
+}

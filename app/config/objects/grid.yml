@@ -19,3 +19,6 @@ Properties:
             min: 0
             max: 2
     Items Type: Token
+Actions:
+  -
+    Name: DisplayGrid
