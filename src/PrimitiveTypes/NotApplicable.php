@@ -8,6 +8,6 @@
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
 
-
-class NotApplicable extends PrimitiveType {
-} 
+class NotApplicable extends PrimitiveType
+{
+}

@@ -1,32 +1,40 @@
 <?php
 
 namespace Fmizzell\Systemizer\CodeGenerators;
+
 use Wingu\OctopusCore\CodeGenerator\CodeLineGenerator;
 use Wingu\OctopusCore\CodeGenerator\PHP\OOP\MethodGenerator;
 use Fmizzell\Systemizer\Inflector;
 
-class Collection extends Property {
-
-    public function __construct(\Fmizzell\Systemizer\Metadata\Collection $metadata) {
+class Collection extends Property
+{
+    public function __construct(\Fmizzell\Systemizer\Metadata\Collection $metadata)
+    {
         $this->metadata = $metadata;
     }
 
-    public function getSetPropertyLine() {
+    public function getSetPropertyLine()
+    {
         $propertyName = $this->metadata->getName();
+
         return new CodeLineGenerator("\$this->{$propertyName} = array();");
     }
 
-    private function singularCapitalizeFirstLetterName() {
+    private function singularCapitalizeFirstLetterName()
+    {
         $propertyName = $this->metadata->getName();
         $propertyName = Inflector::singularize($propertyName);
+
         return ucfirst($propertyName);
     }
 
-    protected function getSetterName() {
+    protected function getSetterName()
+    {
         return "set{$this->singularCapitalizeFirstLetterName()}";
     }
 
-    public function getSetter() {
+    public function getSetter()
+    {
         $setterName = $this->getSetterName();
         $method = new MethodGenerator($setterName);
         $method->setVisibility($this->getVisibility("setter"));
@@ -37,10 +45,10 @@ class Collection extends Property {
         $parameters = $this->metadata->getDimensions();
         $parameters[] = $fakeProperty;
 
-        foreach($parameters as $param) {
+        foreach ($parameters as $param) {
             $pcg = new \Fmizzell\Systemizer\CodeGenerators\Property($param);
             $pcg->setNamespace($this->namespace);
-            foreach($pcg->getConstraintValidationLines() as $cvl) {
+            foreach ($pcg->getConstraintValidationLines() as $cvl) {
                 $method->addBodyLine($cvl);
             }
             $method->addParameter($pcg->getParameter());
@@ -50,9 +58,9 @@ class Collection extends Property {
         // And lets create our array querying string.
         $keys = "";
         $method->addBodyLine(new CodeLineGenerator("\$is_valid = TRUE;"));
-        foreach($this->metadata->getDimensions() as $d) {
+        foreach ($this->metadata->getDimensions() as $d) {
             $pcg = new \Fmizzell\Systemizer\CodeGenerators\Property($d);
-            $method->addBodyLine($pcg->wrapInValidationCode("\$is_valid = FALSE;", TRUE));
+            $method->addBodyLine($pcg->wrapInValidationCode("\$is_valid = FALSE;", true));
             $keys .= "[\${$d->getName()}]";
         }
 
@@ -63,11 +71,13 @@ class Collection extends Property {
         return $method;
     }
 
-    protected function getGetterName() {
+    protected function getGetterName()
+    {
         return "get{$this->singularCapitalizeFirstLetterName()}";
     }
 
-    public function getGetter() {
+    public function getGetter()
+    {
         $setterName = $this->getGetterName();
         $method = new MethodGenerator($setterName);
         $method->setVisibility($this->getVisibility("getter"));
@@ -77,14 +87,14 @@ class Collection extends Property {
         $keys = "";
         $method->addBodyLine(new CodeLineGenerator("\$is_valid = TRUE;"));
 
-        foreach($parameters as $param) {
+        foreach ($parameters as $param) {
             $pcg = new \Fmizzell\Systemizer\CodeGenerators\Property($param);
             $pcg->setNamespace($this->namespace);
-            foreach($pcg->getConstraintValidationLines() as $cvl) {
+            foreach ($pcg->getConstraintValidationLines() as $cvl) {
                 $method->addBodyLine($cvl);
             }
             $method->addParameter($pcg->getParameter());
-            $method->addBodyLine($pcg->wrapInValidationCode("\$is_valid = FALSE;", TRUE));
+            $method->addBodyLine($pcg->wrapInValidationCode("\$is_valid = FALSE;", true));
             $keys .= "[\${$param->getName()}]";
         }
 

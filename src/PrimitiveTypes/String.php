@@ -7,11 +7,13 @@
  */
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
-use Fmizzell\Systemizer\PrimitiveTypes\PrimitiveType;
 
 
-class String extends PrimitiveType {
-    public function getValidationLine() {
-        return "is_string(\${$this->variable})" . parent::getValidationLine();
+
+class String extends PrimitiveType
+{
+    public function getValidationLine()
+    {
+        return "is_string(\${$this->variable})".parent::getValidationLine();
     }
 }

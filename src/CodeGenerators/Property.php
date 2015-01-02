@@ -7,12 +7,14 @@
  */
 
 namespace Fmizzell\Systemizer\CodeGenerators;
+
 use Wingu\OctopusCore\CodeGenerator\CodeLineGenerator;
 use Wingu\OctopusCore\CodeGenerator\PHP\OOP\PropertyGenerator;
 use Wingu\OctopusCore\CodeGenerator\PHP\ParameterGenerator;
 use Wingu\OctopusCore\CodeGenerator\PHP\OOP\MethodGenerator;
 
-class Property {
+class Property
+{
     protected $metadata;
 
     private $primitiveTypesNamespace = "Fmizzell\\Systemizer\\PrimitiveTypes\\";
@@ -23,73 +25,83 @@ class Property {
 
     protected $namespace = "";
 
-    public function __construct(\Fmizzell\Systemizer\Metadata\Property $metadata) {
+    public function __construct(\Fmizzell\Systemizer\Metadata\Property $metadata)
+    {
         $this->metadata = $metadata;
 
         $propertyName = $this->metadata->getName();
-        if($this->isPrimitive()) {
+        if ($this->isPrimitive()) {
             $type_class = "{$this->primitiveTypesNamespace}{$this->metadata->getType()}";
             $this->primitive = new $type_class($propertyName);
-        }
-        else {
+        } else {
             $this->primitive = new \Fmizzell\Systemizer\PrimitiveTypes\NotApplicable($propertyName);
         }
 
-        foreach($this->metadata->getConstraints() as $c) {
+        foreach ($this->metadata->getConstraints() as $c) {
             $this->primitive->setConstraint($c);
         }
     }
 
-    public function getDeclaration() {
+    public function getDeclaration()
+    {
         $prop = new PropertyGenerator($this->metadata->getName());
         $prop->setVisibility("protected");
+
         return $prop;
     }
 
-    protected function getGetterName() {
+    protected function getGetterName()
+    {
         $name = ucfirst($this->metadata->getName());
+
         return "get{$name}";
     }
 
-    public function getGetter() {
+    public function getGetter()
+    {
         $propertyName = $this->metadata->getName();
         $getterName = $this->getGetterName($propertyName);
         $method = new MethodGenerator($getterName);
         $method->setVisibility($this->getVisibility("getter"));
         $codeLine = new CodeLineGenerator("return \$this->{$propertyName};");
         $method->addBodyLine($codeLine);
+
         return $method;
     }
 
-    protected function getSetterName() {
+    protected function getSetterName()
+    {
         $name = ucfirst($this->metadata->getName());
+
         return "set{$name}";
     }
 
-    public function getSetter() {
+    public function getSetter()
+    {
         $name = $this->metadata->getName();
         $setterName = $this->getSetterName();
         $method = new MethodGenerator($setterName);
         $method->setVisibility($this->getVisibility("setter"));
         $method->addParameter($this->getParameter());
-        foreach($this->getConstraintValidationLines() as $line) {
+        foreach ($this->getConstraintValidationLines() as $line) {
             $method->addBodyLine($line);
         }
-        $method->addBodyLine($this->wrapInValidationCode("\$this->{$name} = \${$name};", FALSE, TRUE));
+        $method->addBodyLine($this->wrapInValidationCode("\$this->{$name} = \${$name};", false, true));
+
         return $method;
     }
 
-    public function getParameter() {
+    public function getParameter()
+    {
         $propertyName = $this->metadata->getName();
         $param = new ParameterGenerator($propertyName);
 
-        if(!$this->isPrimitive()) {
-            if(!empty($this->namespace)) {
-                $fullObjectPath = $this->namespace . "\\" . $this->metadata->getType();
+        if (!$this->isPrimitive()) {
+            if (!empty($this->namespace)) {
+                $fullObjectPath = $this->namespace."\\".$this->metadata->getType();
                 $this->uses[] = $fullObjectPath;
-                $param->setType("\\" . $fullObjectPath);
-            }
-            else {
+                $param->setType("\\".$fullObjectPath);
+            } else {
                 $param->setType($this->metadata->getType());
             }
         }
@@ -97,12 +109,15 @@ class Property {
         return $param;
     }
 
-    public function getSetPropertyLine() {
+    public function getSetPropertyLine()
+    {
         $propertyName = $this->metadata->getName();
+
         return new CodeLineGenerator("\$this->{$this->getSetterName($propertyName)}(\${$propertyName});");
     }
 
-    protected function wrapInValidationCode($string, $negate = FALSE, $exception = FALSE) {
+    protected function wrapInValidationCode($string, $negate = false, $exception = false)
+    {
         $primitive = $this->isPrimitive();
 
         // If the type is a primitive type, we use the types validation.
@@ -111,10 +126,8 @@ class Property {
             $validation_line = $this->primitive->getValidationLine();
             if ($negate) {
                 $line .= "if (!($validation_line)) { ";
-            }
-            else {
+            } else {
                 $line .= "if ($validation_line) { ";
-
             }
         }
 
@@ -124,63 +137,69 @@ class Property {
             $line .= " }";
         }
 
-        if($primitive && $exception) {
-          $line .= " else { throw new Exception(\"Invalid value\"); }";
+        if ($primitive && $exception) {
+            $line .= " else { throw new Exception(\"Invalid value\"); }";
         }
+
         return new CodeLineGenerator($line);
     }
 
-    protected function getConstraintValidationLines() {
+    protected function getConstraintValidationLines()
+    {
         $lines = array();
-        if($this->primitive) {
+        if ($this->primitive) {
             foreach ($this->primitive->getConstraintLines() as $cl) {
                 $lines[] = new CodeLineGenerator($cl);
             }
         }
+
         return $lines;
     }
 
-    private function isPrimitive() {
+    private function isPrimitive()
+    {
         // If the type is a primitive type, we use the types validation.
-        $primitive = FALSE;
+        $primitive = false;
         $type = $this->metadata->getType();
         $type_class = "{$this->primitiveTypesNamespace}{$type}";
 
-        if(class_exists($type_class)) {
-            $primitive = TRUE;
+        if (class_exists($type_class)) {
+            $primitive = true;
         }
+
         return $primitive;
     }
 
-    public function getMetadata() {
+    public function getMetadata()
+    {
         return $this->metadata;
     }
 
-    public function setNamespace($namespace) {
+    public function setNamespace($namespace)
+    {
         $this->namespace = $namespace;
     }
 
-    public function getUses() {
+    public function getUses()
+    {
         return $this->uses;
     }
 
-    protected function getVisibility($accessorType) {
+    protected function getVisibility($accessorType)
+    {
         $kind = $this->metadata->getKind();
         if ($accessorType == "setter") {
-            if($kind === \Fmizzell\Systemizer\Metadata\Property::OPTIONAL) {
+            if ($kind === \Fmizzell\Systemizer\Metadata\Property::OPTIONAL) {
                 return "public";
-            }
-            elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
+            } elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
                 $kind === \Fmizzell\Systemizer\Metadata\Property::INTERNAL ||
                 $kind === \Fmizzell\Systemizer\Metadata\Property::ACCESSIBLE) {
                 return "protected";
             }
-        }
-        else if ($accessorType == "getter") {
-            if($kind === \Fmizzell\Systemizer\Metadata\Property::INTERNAL) {
+        } elseif ($accessorType == "getter") {
+            if ($kind === \Fmizzell\Systemizer\Metadata\Property::INTERNAL) {
                 return "protected";
-            }
-            elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
+            } elseif ($kind === \Fmizzell\Systemizer\Metadata\Property::REQUIRED ||
                 $kind === \Fmizzell\Systemizer\Metadata\Property::OPTIONAL ||
                 $kind === \Fmizzell\Systemizer\Metadata\Property::ACCESSIBLE) {
                 return "public";

@@ -1,9 +1,10 @@
 <?php
 namespace Fmizzell\Systemizer\Metadata;
-use \Exception;
 
-class Property {
+use Exception;
 
+class Property
+{
     const REQUIRED = 0;
     const OPTIONAL = 1;
     const INTERNAL = 2;
@@ -15,7 +16,8 @@ class Property {
 
     protected $kind;
 
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->setName($name);
         $this->constraints = array();
 
@@ -23,56 +25,62 @@ class Property {
         $this->kind = Property::REQUIRED;
     }
 
-    private function setName($name) {
+    private function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
-    public function setKind($kind) {
-       if($kind === Property::REQUIRED || $kind === Property::OPTIONAL || $kind === Property::INTERNAL || $kind === Property::ACCESSIBLE) {
-           $this->kind = $kind;
-       }
-       else {
-           throw new Exception("The kind should be one of the constants: REQUIRED, OPTIONAL, ACCESSIBLE or INTERNAL");
-       }
+    public function setKind($kind)
+    {
+        if ($kind === Property::REQUIRED || $kind === Property::OPTIONAL || $kind === Property::INTERNAL || $kind === Property::ACCESSIBLE) {
+            $this->kind = $kind;
+        } else {
+            throw new Exception("The kind should be one of the constants: REQUIRED, OPTIONAL, ACCESSIBLE or INTERNAL");
+        }
     }
 
-    public function getKind() {
+    public function getKind()
+    {
         return $this->kind;
     }
 
-    public function addConstraint($constraint) {
+    public function addConstraint($constraint)
+    {
         $this->constraints[] = $constraint;
     }
 
-    public function getConstraints() {
+    public function getConstraints()
+    {
         return $this->constraints;
     }
 
-    public static function createFromArray($array) {
+    public static function createFromArray($array)
+    {
         if (array_key_exists('Name', $array)) {
             $property = new Property($array['Name']);
-        }
-        else {
+        } else {
             throw new Exception("The array did not contain the necessary name key for the Property.");
         }
 
         // If no type is given, we will assume the most general type: String.
         if (array_key_exists('Type', $array)) {
             $property->setType($array['Type']);
-        }
-        else {
+        } else {
             $property->setType("String");
         }
 
@@ -84,20 +92,16 @@ class Property {
 
         if (array_key_exists('Kind', $array)) {
             $kind = $array['Kind'];
-            if($kind == "Required") {
+            if ($kind == "Required") {
                 $property->setKind(Property::REQUIRED);
-            }
-            else if($kind == "Optional") {
+            } elseif ($kind == "Optional") {
                 $property->setKind(Property::OPTIONAL);
-            }
-            else if($kind == "Internal") {
+            } elseif ($kind == "Internal") {
                 $property->setKind(Property::INTERNAL);
-            }
-            else if($kind == "Accessible") {
+            } elseif ($kind == "Accessible") {
                 $property->setKind(Property::ACCESSIBLE);
             }
         }
-
 
         return $property;
     }
