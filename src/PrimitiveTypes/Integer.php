@@ -7,11 +7,13 @@
  */
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
-use Fmizzell\Systemizer\PrimitiveTypes\PrimitiveType;
 
 
-class Integer extends PrimitiveType {
-    public function getValidationLine() {
-        return "is_integer(\${$this->variable})" . parent::getValidationLine();
+
+class Integer extends PrimitiveType
+{
+    public function getValidationLine()
+    {
+        return "is_integer(\${$this->variable})".parent::getValidationLine();
     }
-} 
+}

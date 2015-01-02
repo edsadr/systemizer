@@ -7,50 +7,59 @@
  */
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
+
 use Valitron\Validator;
 
-
-class PrimitiveType {
+class PrimitiveType
+{
     protected $variable;
     protected $constraints;
 
-    public function __construct($variable) {
+    public function __construct($variable)
+    {
         $validator = new Validator(array('var' => $variable));
         $validator->rule('regex', 'var', '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/');
 
-        if(is_string($variable) && $validator->validate()) {
+        if (is_string($variable) && $validator->validate()) {
             $this->variable = $variable;
-        }
-        else {
+        } else {
             throw new \Exception(implode(" ", $validator->errors()));
         }
     }
 
-    public function getVariable() {
-      return $this->variable;
+    public function getVariable()
+    {
+        return $this->variable;
     }
 
-    public function setConstraint($constraint) {
+    public function setConstraint($constraint)
+    {
         $this->constraints[] = $constraint;
     }
 
-    public function getConstraintLines() {
-        if(empty($this->constraints)) { return array(); }
+    public function getConstraintLines()
+    {
+        if (empty($this->constraints)) {
+            return array();
+        }
 
         $lines[] = "\$validator = new Validator(array('var' => \${$this->variable}));";
 
-        foreach($this->constraints as $key => $constraint) {
-            foreach($constraint as $key => $value) {
+        foreach ($this->constraints as $key => $constraint) {
+            foreach ($constraint as $key => $value) {
                 $lines[] = "\$validator->rule('{$key}', 'var', '{$value}');";
             }
         }
+
         return $lines;
     }
 
-    public function getValidationLine() {
-        if(!empty($this->constraints)) {
+    public function getValidationLine()
+    {
+        if (!empty($this->constraints)) {
             return " && \$validator->validate()";
         }
+
         return "";
     }
 }
