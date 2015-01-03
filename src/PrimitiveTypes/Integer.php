@@ -8,8 +8,6 @@
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
 
-
-
 class Integer extends PrimitiveType
 {
     public function getValidationLine()

@@ -8,8 +8,6 @@
 
 namespace Fmizzell\Systemizer\PrimitiveTypes;
 
-
-
 class String extends PrimitiveType
 {
     public function getValidationLine()

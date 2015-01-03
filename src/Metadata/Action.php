@@ -25,7 +25,7 @@ class Action
     private function setName($name)
     {
         // @todo name should be an upper camelcase string.
-    $this->name = $name;
+        $this->name = $name;
     }
 
     public function getName()

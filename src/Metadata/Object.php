@@ -1,7 +1,6 @@
 <?php
 namespace Fmizzell\Systemizer\Metadata;
 
-
 class Object
 {
     private $name;
