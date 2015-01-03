@@ -1,3 +1,5 @@
 .idea
+.phpintel
 composer.lock
 vendor
+node_modules
